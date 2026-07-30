@@ -105,4 +105,4 @@ class Snake(GameObject):
         self.segments.pop()
 
     def grow(self):
-        """Увеличивает длину
+        """Увеличивает длину"""
