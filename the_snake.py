@@ -77,4 +77,114 @@ class Snake(GameObject):
         """
         Устанавливает новое направление движения, если оно не противоположно текущему.
 
-        :param new_direction:
+        :param new_direction: кортеж (dx, dy), обозначающий новое направление.
+        """
+        opposite = {
+            UP: DOWN,
+            DOWN: UP,
+            LEFT: RIGHT,
+            RIGHT: LEFT,
+        }
+        if new_direction != opposite.get(self.direction):
+            self.next_direction = new_direction
+
+    def move(self):
+        """Обновляет позицию змейки в соответствии с текущим направлением."""
+        if self.next_direction is not None:
+            self.direction = self.next_direction
+            self.next_direction = None
+
+        head_x, head_y = self.get_head_position()
+        dx, dy = self.direction
+        new_head = (head_x + dx * GRID_SIZE, head_y + dy * GRID_SIZE)
+
+        self.last = self.segments[-1]
+        self.segments.insert(0, new_head)
+        self.segments.pop()
+
+    def grow(self):
+        """Увеличивает длину змейки на один сегмент (дублирует последний сегмент)."""
+        self.segments.append(self.last)
+
+    def check_collision(self):
+        """
+        Проверяет, столкнулась ли змейка со стенами или с самой собой.
+
+        :return: True, если есть столкновение; иначе False.
+        """
+        head = self.get_head_position()
+        # Столкновение со стенами
+        if not (0 <= head[0] < SCREEN_WIDTH and 0 <= head[1] < SCREEN_HEIGHT):
+            return True
+        # Столкновение с собой
+        if head in self.segments[1:]:
+            return True
+        return False
+
+    def draw(self, surface):
+        """Отрисовывает все сегменты змейки с обводкой."""
+        for position in self.segments:
+            rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
+            pygame.draw.rect(surface, self.body_color, rect)
+            pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
+
+
+# --- Вспомогательные функции ---
+def handle_keys(snake):
+    """
+    Обрабатывает события клавиатуры и обновляет направление змейки.
+
+    :param snake: экземпляр класса Snake.
+    """
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            pygame.quit()
+            raise SystemExit
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                snake.change_direction(UP)
+            elif event.key == pygame.K_DOWN:
+                snake.change_direction(DOWN)
+            elif event.key == pygame.K_LEFT:
+                snake.change_direction(LEFT)
+            elif event.key == pygame.K_RIGHT:
+                snake.change_direction(RIGHT)
+
+
+def main():
+    """Основная функция игры: инициализация, игровой цикл и отрисовка."""
+    pygame.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
+    pygame.display.set_caption('Змейка')
+    clock = pygame.time.Clock()
+
+    snake = Snake()
+    apple = Apple()
+    grow_next_frame = False
+
+    while True:
+        clock.tick(SPEED)
+        handle_keys(snake)
+
+        if grow_next_frame:
+            snake.grow()
+            grow_next_frame = False
+        snake.move()
+
+        if snake.check_collision():
+            snake = Snake()
+            apple = Apple()
+            continue
+
+        if snake.get_head_position() == apple.position:
+            apple.randomize_position()
+            grow_next_frame = True
+
+        screen.fill(BOARD_BACKGROUND_COLOR)
+        apple.draw(screen)
+        snake.draw(screen)
+        pygame.display.flip()
+
+
+if __name__ == '__main__':
+    main()
