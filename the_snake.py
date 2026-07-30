@@ -33,7 +33,6 @@ class GameObject:
         pass
 
 
-
 class Apple(GameObject):
     """Класс яблока — целевого объекта в игре «Змейка»."""
 
@@ -54,7 +53,6 @@ class Apple(GameObject):
         rect = pygame.Rect(self.position, (GRID_SIZE, GRID_SIZE))
         pygame.draw.rect(surface, self.body_color, rect)
         pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
-
 
 
 class Snake(GameObject):
@@ -107,89 +105,4 @@ class Snake(GameObject):
         self.segments.pop()
 
     def grow(self):
-        """Увеличивает длину змейки на один сегмент (дублирует последний сегмент)."""
-        self.segments.append(self.last)
-
-    def check_collision(self):
-        """
-        Проверяет, столкнулась ли змейка с самой собой.
-
-        :return: True, если есть столкновение; иначе False.
-        """
-        head = self.get_head_position()
-        hits_self = head in self.segments[1:]
-
-        return hits_self
-
-    def draw(self, surface):
-        """Отрисовывает все сегменты змейки с обводкой."""
-        for position in self.segments:
-            rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
-            pygame.draw.rect(surface, self.body_color, rect)
-            pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
-
-
-
-# --- Вспомогательные функции ---
-def handle_keys(snake):
-    """
-    Обрабатывает события клавиатуры и обновляет направление змейки.
-
-    :param snake: экземпляр класса Snake.
-    """
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            raise SystemExit
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_UP:
-                snake.change_direction(UP)
-            elif event.key == pygame.K_DOWN:
-                snake.change_direction(DOWN)
-            elif event.key == pygame.K_LEFT:
-                snake.change_direction(LEFT)
-            elif event.key == pygame.K_RIGHT:
-                snake.change_direction(RIGHT)
-
-
-
-def main():
-    """Основная функция игры: инициализация, игровой цикл и отрисовка."""
-    pygame.init()
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 0, 32)
-    pygame.display.set_caption('Змейка')
-    clock = pygame.time.Clock()
-
-    snake = Snake()
-    apple = Apple()
-    grow_next_frame = False
-
-    while True:
-        clock.tick(SPEED)
-        handle_keys(snake)
-
-        if grow_next_frame:
-            snake.grow()
-            grow_next_frame = False
-        snake.move()
-
-        if snake.check_collision():
-            snake = Snake()
-            apple = Apple()
-            continue
-
-        if snake.get_head_position() == apple.position:
-            apple.randomize_position()
-            # Убедимся, что яблоко не появилось на змейке
-            while apple.position in snake.segments:
-                apple.randomize_position()
-            grow_next_frame = True
-
-        screen.fill(BOARD_BACKGROUND_COLOR)
-        apple.draw(screen)
-        snake.draw(screen)
-        pygame.display.flip()
-
-
-if __name__ == '__main__':
-    main()
+        """Увеличивает длину
