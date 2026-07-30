@@ -97,7 +97,10 @@ class Snake(GameObject):
 
         head_x, head_y = self.get_head_position()
         dx, dy = self.direction
-        new_head = (head_x + dx * GRID_SIZE, head_y + dy * GRID_SIZE)
+        new_head = (
+            head_x + dx * GRID_SIZE,
+            head_y + dy * GRID_SIZE
+        )
 
         self.last = self.segments[-1]
         self.segments.insert(0, new_head)
@@ -114,12 +117,10 @@ class Snake(GameObject):
         :return: True, если есть столкновение; иначе False.
         """
         head = self.get_head_position()
-        # Столкновение со стенами
         within_bounds = (
-            0 <= head[0] < SCREEN_WIDTH and
-            0 <= head[1] < SCREEN_HEIGHT
+            0 <= head[0] < SCREEN_WIDTH
+            and 0 <= head[1] < SCREEN_HEIGHT
         )
-        # Столкновение с собой
         hits_self = head in self.segments[1:]
 
         return not within_bounds or hits_self
