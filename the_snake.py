@@ -75,7 +75,8 @@ class Snake(GameObject):
 
     def change_direction(self, new_direction):
         """
-        Устанавливает новое направление движения, если оно не противоположно текущему.
+        Устанавливает новое направление движения, если оно не противоположно
+        текущему.
 
         :param new_direction: кортеж (dx, dy), обозначающий новое направление.
         """
@@ -114,12 +115,14 @@ class Snake(GameObject):
         """
         head = self.get_head_position()
         # Столкновение со стенами
-        if not (0 <= head[0] < SCREEN_WIDTH and 0 <= head[1] < SCREEN_HEIGHT):
-            return True
+        within_bounds = (
+            0 <= head[0] < SCREEN_WIDTH and
+            0 <= head[1] < SCREEN_HEIGHT
+        )
         # Столкновение с собой
-        if head in self.segments[1:]:
-            return True
-        return False
+        hits_self = head in self.segments[1:]
+
+        return not within_bounds or hits_self
 
     def draw(self, surface):
         """Отрисовывает все сегменты змейки с обводкой."""
