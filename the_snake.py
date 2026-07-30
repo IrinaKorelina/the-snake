@@ -179,7 +179,6 @@ def main():
 
     # while True:
     #     clock.tick(SPEED)
-
           handle_keys(snake)
 
         # Тут опишите основную логику игры.
@@ -206,7 +205,6 @@ def main():
         screen.fill(BOARD_BACKGROUND_COLOR)
         apple.draw(screen)
         snake.draw(screen)
-
         pygame.display.flip()
 
 
