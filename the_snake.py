@@ -1,7 +1,6 @@
 import pygame
 from random import randint
 
-
 # --- Константы ---
 SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
 GRID_SIZE = 20
@@ -20,7 +19,6 @@ SNAKE_COLOR = (0, 255, 0)
 
 SPEED = 20
 
-
 # --- Классы ---
 class GameObject:
     """Базовый класс для игровых объектов."""
@@ -35,8 +33,9 @@ class GameObject:
         pass
 
 
+
 class Apple(GameObject):
-    """Класс яблока — целевого объекта в игре «Змейка»."""
+    """Класс яблока — целевого объекта в игре «Змейка»."""
 
     def __init__(self):
         """Создаёт яблоко, задаёт его цвет и размещает в случайной точке поля."""
@@ -57,8 +56,9 @@ class Apple(GameObject):
         pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
 
 
+
 class Snake(GameObject):
-    """Класс змейки — основного игрового объекта."""
+    """Класс змейки — основного игрового объекта."""
 
     def __init__(self):
         """Создаёт змейку: задаёт цвет, начальное направление и позицию."""
@@ -98,8 +98,8 @@ class Snake(GameObject):
         head_x, head_y = self.get_head_position()
         dx, dy = self.direction
         new_head = (
-            head_x + dx * GRID_SIZE,
-            head_y + dy * GRID_SIZE
+            (head_x + dx * GRID_SIZE) % SCREEN_WIDTH,
+            (head_y + dy * GRID_SIZE) % SCREEN_HEIGHT
         )
 
         self.last = self.segments[-1]
@@ -112,18 +112,14 @@ class Snake(GameObject):
 
     def check_collision(self):
         """
-        Проверяет, столкнулась ли змейка со стенами или с самой собой.
+        Проверяет, столкнулась ли змейка с самой собой.
 
         :return: True, если есть столкновение; иначе False.
         """
         head = self.get_head_position()
-        within_bounds = (
-            0 <= head[0] < SCREEN_WIDTH
-            and 0 <= head[1] < SCREEN_HEIGHT
-        )
         hits_self = head in self.segments[1:]
 
-        return not within_bounds or hits_self
+        return hits_self
 
     def draw(self, surface):
         """Отрисовывает все сегменты змейки с обводкой."""
@@ -131,6 +127,7 @@ class Snake(GameObject):
             rect = pygame.Rect(position, (GRID_SIZE, GRID_SIZE))
             pygame.draw.rect(surface, self.body_color, rect)
             pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
+
 
 
 # --- Вспомогательные функции ---
@@ -153,6 +150,7 @@ def handle_keys(snake):
                 snake.change_direction(LEFT)
             elif event.key == pygame.K_RIGHT:
                 snake.change_direction(RIGHT)
+
 
 
 def main():
@@ -182,6 +180,9 @@ def main():
 
         if snake.get_head_position() == apple.position:
             apple.randomize_position()
+            # Убедимся, что яблоко не появилось на змейке
+            while apple.position in snake.segments:
+                apple.randomize_position()
             grow_next_frame = True
 
         screen.fill(BOARD_BACKGROUND_COLOR)
