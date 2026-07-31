@@ -61,6 +61,7 @@ class Snake(GameObject):
     def __init__(self):
         """Создаёт змейку: задаёт цвет, начальное направление и позицию."""
         super().__init__()
+        self.grow_next_frame = False
         self.segments = [self.position]
         self.body_color = SNAKE_COLOR
         self.direction = RIGHT
@@ -102,7 +103,11 @@ class Snake(GameObject):
 
         self.last = self.segments[-1]
         self.segments.insert(0, new_head)
-        self.segments.pop()
+        if not self.grow_next_frame:
+            self.segments.pop()
+        else:
+            self.grow_next_frame = False  # сбрасываем флаг    
 
     def grow(self):
         """Увеличивает длину"""
+        self.grow_next_frame = True
