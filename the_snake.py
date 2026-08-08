@@ -1,10 +1,11 @@
 import pygame
-from random
+import random
+from random import randint
 import sys
 
-
 pygame.init()
-# --- Константы ---
+
+# Константы
 SCREEN_WIDTH, SCREEN_HEIGHT = 640, 480
 GRID_SIZE = 20
 GRID_WIDTH = SCREEN_WIDTH // GRID_SIZE
@@ -22,7 +23,8 @@ SNAKE_COLOR = (0, 255, 0)
 
 SPEED = 20
 
-# --- Классы ---
+
+# Классы
 class GameObject:
     """Базовый класс для игровых объектов."""
 
@@ -34,6 +36,7 @@ class GameObject:
     def draw(self, surface):
         """Отрисовывает объект на поверхности. Должен быть переопределён в наследниках."""
         pass
+
 
 
 class Apple(GameObject):
@@ -56,6 +59,7 @@ class Apple(GameObject):
         rect = pygame.Rect(self.position, (GRID_SIZE, GRID_SIZE))
         pygame.draw.rect(surface, self.body_color, rect)
         pygame.draw.rect(surface, BORDER_COLOR, rect, 1)
+
 
 
 class Snake(GameObject):
@@ -109,8 +113,8 @@ class Snake(GameObject):
         if not self.grow_next_frame:
             self.segments.pop()
         else:
-            self.grow_next_frame = False  # сбрасываем флаг    
+            self.grow_next_frame = False  # сбрасываем флаг
 
     def grow(self):
-        """Увеличивает длину"""
+        """Увеличивает длину змейки."""
         self.grow_next_frame = True
