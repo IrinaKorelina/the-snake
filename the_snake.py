@@ -1,5 +1,4 @@
 import pygame
-import random
 from random import randint
 
 pygame.init()
